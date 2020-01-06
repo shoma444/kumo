@@ -6,21 +6,24 @@ python codes are all written in py2.7 and for best compatibility, use Anaconda
 
 To use the codes, please refer to the following:
 
-file_encrypter.cpp
+file_encrypter.cpp : 
 This encrypts and decrypts a given text file (ASCII) with a user specified password. 
 The encryption is done using standard prime number modular arithmetic, and is meant for pedagocical use.
 Launch and follow the directions/prompts.
 
+//
 
-chua3Dgrapher.py
+chua3Dgrapher.py : 
 This models and graphs Chua's circuit, a chaotic system comprised of capacitors, inductors and a diode.
 
+//
 
-chua4dvarFMINscipy.py
+chua4dvarFMINscipy.py : 
 This attempts to use data assimilation techniques (4-D var) to forecast (similar to weather forecasting) the chaotc and non-linear circuit. 
 The cost function is minimized using a scipy module.
 
+//
 
-chua4dvarBruteForce_NOISEparallel.py
+chua4dvarBruteForce_NOISEparallel.py : 
 Similar to chua4dvarFMINscipy.py but the cost function is minimized using a simple brute force method. 
 The program will utilize 8 threads to speed things up.

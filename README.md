@@ -26,4 +26,3 @@ The cost function is minimized using a scipy module.
 
 chua4dvarBruteForce_NOISEparallel.py : 
 Similar to chua4dvarFMINscipy.py but the cost function is minimized using a simple brute force method. 
-The program will utilize 8 threads to speed things up.

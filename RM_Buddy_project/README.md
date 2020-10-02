@@ -1,4 +1,4 @@
-README.md file for RM Buddy (v1.0.2)
+README.md file for RM Buddy (v1.0.3)
 
 Thank you for trying out RM Buddy!
 
@@ -26,4 +26,11 @@ NOTES:
 
 Please report bugs to: syamanou@physics.utoronto.ca
 (c) RM Buddy Shoma Yamanouchi
+
+Version history:
+1.0.0 (beta version C) (not released)
+1.0.1 (not released) Designed for distribution.
+1.0.2 (not released) Updates to menu bar, GUI updates and minor bug fixes.
+1.0.3 Fixed an issue where the program would not look in nested directories in certain cases. Fixed an issue where windows would remain open despite quitting the program. Overall program termination should perform better.
+
 

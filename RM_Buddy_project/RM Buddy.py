@@ -1,8 +1,8 @@
 # Written and developed by Shoma Yamanouchi
 # Contact: syamanou@physics.utoronto.ca
 # Website: https://sites.google.com/view/shoma-yamanouchi
-# version 1.0.1
-version = '1.0.1'
+# version 1.0.3
+version = '1.0.3'
 DEVELOPED_BY_SHOMA = 'RM Budddy was developed by Shoma Yamanouchi 2020 (c)'
 
 import os, sys, wx
@@ -11,7 +11,20 @@ import wx.lib.scrolledpanel as scrolled
 class MainMenu(wx.Frame):
     def __init__(self):
         super(MainMenu, self).__init__(parent=None, title='RM Buddy',size=(500,350))
+        self.Bind(wx.EVT_ACTIVATE_APP, self.OnActivate)
         panel = wx.Panel(self)
+        
+        self.menubar = wx.MenuBar()
+        wx.MenuBar.MacSetCommonMenuBar(self.menubar)
+        fileMenu = wx.Menu()
+        aboutme = fileMenu.Append(wx.ID_ABOUT, '&About RM Buddy','Information about this program')
+        self.Bind(wx.EVT_MENU, self.OnAbout, aboutme)
+        wx.App.SetMacExitMenuItemId(wx.ID_EXIT)
+        quitmenu = fileMenu.Append(wx.ID_EXIT,'Quit RM Buddy','Terminate this program')
+        self.Bind(wx.EVT_MENU, self.menuquit, quitmenu)
+        self.menubar.Append(fileMenu, '|')
+        self.SetMenuBar(self.menubar)
+        
         menu_sizer = wx.BoxSizer(wx.VERTICAL)
         self.text_ctrl = wx.TextCtrl(panel)
         Welcome = wx.StaticText(panel, -1, style = wx.ALIGN_CENTRE)
@@ -42,22 +55,58 @@ class MainMenu(wx.Frame):
         menu_sizer.AddSpacer(3)
         panel.SetSizer(menu_sizer)
         self.Show()
+    def menuquit(self,Event):
+        self.Destroy()
+    def OnAbout(self, event):
+        dlg = wx.MessageDialog(self, "RM Buddy\nVersion: "+version+"\nBy Shoma Yamanouchi\n",
+                                "About Me", wx.CENTER | wx.ICON_INFORMATION)
+        dlg.ShowModal()
+        dlg.Destroy()
+    def MacReopenApp(self):
+        self.GetTopWindow().Raise()
+    def OnActivate(self, event):
+        # if this is an activate event, rather than something else, like iconize.
+        if event.GetActive():
+            self.BringWindowToFront()
+        event.Skip()
+    def OpenFileMessage(self, filename):
+        dlg = wx.MessageDialog(None,
+                               "This app was just asked to open:\n%s\n"%filename,
+                               "File Dropped",
+                               wx.OK|wx.ICON_INFORMATION)
+        dlg.ShowModal()
+        dlg.Destroy()
 
+    def MacOpenFile(self, filename):
+        """Called for files droped on dock icon, or opened via finders context menu"""
+        print filename
+        print "%s dropped on app"%(filename) #code to load filename goes here.
+        self.OpenFileMessage(filename)
+        
+    def MacReopenApp(self):
+        """Called when the doc icon is clicked, and ???"""
+        self.BringWindowToFront()
+
+    def MacNewFile(self):
+        pass
+    
+    def MacPrintFile(self, file_path):
+        pass
     def start_press(self, event):
         inputpath = self.text_ctrl.GetValue()
         if not inputpath:
-            WarningPopup('Error','Please enter the directory you wish to clean up.',(450, 110))
+            WarningPopup('Error','Please enter the directory you wish to clean up.',(450, 110),self)
         else:
-            MainWrapper(inputpath)
+            MainWrapper(inputpath,self)
             
     def QuitAll(self, event):
         wx.Exit()
         
 
-def WarningPopup(Title,Text,WindowSize):
+def WarningPopup(Title,Text,WindowSize,parentframe):
     class WarningWindow(wx.Frame):
         def __init__(self):
-            super(WarningWindow, self).__init__(parent=None, title=Title,size=WindowSize)#(450, 110)
+            super(WarningWindow, self).__init__(parent=parentframe, title=Title,size=WindowSize)#(450, 110)
             panel = wx.Panel(self)
             errorwindow_size = wx.BoxSizer(wx.VERTICAL)
             Warning = wx.StaticText(panel, -1, style = wx.ALIGN_CENTRE)
@@ -74,14 +123,14 @@ def WarningPopup(Title,Text,WindowSize):
     WarningWindow()
 
 
-def MainWrapper(path_argument):
+def MainWrapper(path_argument,parentframe):
     inputpath = path_argument
     if inputpath[-1] != '/':
         inputpath = inputpath + '/'
     # Check if given path is valid
     ValidPathFlag = os.path.isdir(inputpath)
     if not ValidPathFlag:
-        WarningPopup('Error','Directory not found! Please enter a valid path.',(450, 110))
+        WarningPopup('Error','Directory not found! Please enter a valid path.',(450, 110),parentframe)
     else:
         Core(inputpath)
 
@@ -103,7 +152,7 @@ def Core(path_argument):
     size = min([800,400+dflen,400+ddlen,220+dflen+ddlen])
     class ResultFiles(wx.Frame):
         def __init__(self):
-            super(ResultFiles, self).__init__(parent=None, title='Results',size=(600,size))
+            super(ResultFiles, self).__init__(parent=frame, title='Results',size=(600,size))
             panel = wx.Panel(self)
             result_sizer = wx.BoxSizer(wx.VERTICAL)
             resultprint = wx.StaticText(panel, -1, style = wx.ALIGN_CENTRE | wx.ALIGN_TOP)
@@ -190,18 +239,18 @@ def Core(path_argument):
             
         def Del_files(self, event):
             if not files_to_del and not dirs_to_del:
-                WarningPopup('Error','Nothing was selected for deletion!\nPlease select at least one item you want to delete.',(450, 130))
+                WarningPopup('Error','Nothing was selected for deletion!\nPlease select at least one item you want to delete.',(450, 130),self)
             else:
-                DeleteWarning(files_to_del,dirs_to_del)
+                DeleteWarning(files_to_del,dirs_to_del,self)
         def Del_all_files(self, event):
             if not dub and not dubdir:
-                WarningPopup('Error','Nothing was selected for deletion!\nPlease select at least one item you want to delete.',(450, 130))
+                WarningPopup('Error','Nothing was selected for deletion!\nPlease select at least one item you want to delete.',(450, 130),self)
             else:
-                DeleteWarning(dub,dubdir)
+                DeleteWarning(dub,dubdir,self)
                 
     class NothingFound(wx.Frame):
         def __init__(self):
-            super(NothingFound, self).__init__(parent=None, title='Results',size=(450,170))
+            super(NothingFound, self).__init__(parent=frame, title='Results',size=(450,170))
             panel = wx.Panel(self)
             result_sizerNF = wx.BoxSizer(wx.VERTICAL)
             resultprint = wx.StaticText(panel, -1, style = wx.ALIGN_CENTRE | wx.ALIGN_TOP)
@@ -229,10 +278,10 @@ def Core(path_argument):
         ResultFiles()
 
 
-def DeleteWarning(path,dirspath):
+def DeleteWarning(path,dirspath,parentframe):
     class DelWarningWindow(wx.Frame):
         def __init__(self):
-            super(DelWarningWindow, self).__init__(parent=None, title='Warning!',size=(450, 130))
+            super(DelWarningWindow, self).__init__(parent=parentframe, title='Warning!',size=(450, 130))
             panel = wx.Panel(self)
             errorwindow_size = wx.BoxSizer(wx.VERTICAL)
             Warning = wx.StaticText(panel, -1, style = wx.ALIGN_CENTRE)
@@ -249,10 +298,10 @@ def DeleteWarning(path,dirspath):
             panel.SetSizer(errorwindow_size)
             self.Show()
             
-        def closepress(self, event):
+        def closepress(self, event,):
             self.Close()
         def procede(self, event):
-            Delfunc(path,dirspath)
+            Delfunc(path,dirspath,parentframe)
             self.Close()
     DelWarningWindow()
 
@@ -462,12 +511,12 @@ def submain(nextpath,counter,duplicatessub,oglistsub,duplicatesdirssub,oglistdir
         oglistdirssub.append(nextpath + possible_originals + '/')
         duplicatesdirssub = duplicatesdirssub + [nextpath + x + '/' for x in possible_duplicates_list_dir]
         
-        for x4 in dirssub:
-            if counter > 10: # The program will not go beyond 10 nested sub-directories
-                pass
-            else:
-                counter = submain(nextpath+x4,counter,duplicatessub,oglistsub,duplicatesdirssub,oglistdirssub)
-    
+    for x4 in dirssub:
+        if counter > 10: # The program will not go beyond 10 nested sub-directories
+            pass
+        else:
+            counter = submain(nextpath+x4,counter,duplicatessub,oglistsub,duplicatesdirssub,oglistdirssub)
+
     return counter
 
 
@@ -491,7 +540,7 @@ def checkendcopy(file): # Check end for words like 'copy' or numbers to indicate
         originalname = file.split('copy')[0][:-1]
     return originalname
     
-def Delfunc(args,dirsargs):
+def Delfunc(args,dirsargs,parentframe):
     # For debugging
     """
     for x in args:
@@ -510,9 +559,9 @@ def Delfunc(args,dirsargs):
     class DeleteDone(wx.Frame):
         def __init__(self):
             if deleteditems == 1:
-                super(DeleteDone, self).__init__(parent=None, title=str(deleteditems)+' item deleted',size=WindowSize)
+                super(DeleteDone, self).__init__(parent=frame, title=str(deleteditems)+' item deleted',size=WindowSize)
             else:
-                super(DeleteDone, self).__init__(parent=None, title=str(deleteditems)+' items deleted',size=WindowSize)
+                super(DeleteDone, self).__init__(parent=frame, title=str(deleteditems)+' items deleted',size=WindowSize)
             panel = wx.Panel(self)
             DeleteDone_size = wx.BoxSizer(wx.VERTICAL)
             DoneMessage = wx.StaticText(panel, -1, style = wx.ALIGN_CENTRE)
@@ -616,6 +665,8 @@ if __name__ == '__main__':
         fileerror = delfiles(path,og,dub,ogdir,dubdir)
     """
     app = wx.App()
+    wx.AppConsole.SetAppName(app,'RM Buddy')
+    wx.AppConsole.SetAppDisplayName(app,'RM Buddy')
     frame = MainMenu()
     app.MainLoop()
 

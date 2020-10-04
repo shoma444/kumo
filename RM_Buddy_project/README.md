@@ -7,7 +7,7 @@ Website: https://sites.google.com/view/shoma-yamanouchi
 
 
 WHAT IS RM Buddy?
-RM Buddy is a program for tidying up directories (and sub-directories within). It will look for files and directories that may be duplicates (e.g., documents that you may have downloaded multiple times), by looking for key words like "... copy ..." and phrases like "... (2)" or "... {3)" etc. You can review, and delete selected files as well.
+RM Buddy is a program for tidying up directories (and sub-directories within). It will look for files and directories that may be duplicates (e.g., documents that you may have downloaded multiple times), by looking for key words like "... copy ..." and phrases like "... (2)" or "... (3)" etc. You can review, and delete selected files as well.
 
 HOW TO USE:
 (1) Launch the app. The main menu should prompt you to enter a directory that you would like to clean up. 

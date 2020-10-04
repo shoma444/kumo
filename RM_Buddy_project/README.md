@@ -5,6 +5,8 @@ Thank you for trying out RM Buddy!
 RM Buddy was written and developed by Shoma Yamanouchi (contact: syamanou@physics.utoronto.ca)
 Website: https://sites.google.com/view/shoma-yamanouchi
 
+INSTALLATION:
+Drag the application to the Applications folder. Make sure to have the "Allow apps downloaded from:" setting to include indentified developers, in the Security & Privacy tab in System Preferences. When launched for the first time, you will need to go back to this tab to allow the program to run. On macOS 10.15 (Catalina) and up, you may be prompted to allow access to folders you choose to run. RM Buddy will need to be able to read the file names to look for duplicates. RM Buddy will NOT try to open and read files. RM Buddy does NOT collect user data, nor does it include any form of telemetry.
 
 WHAT IS RM Buddy?
 RM Buddy is a program for tidying up directories (and sub-directories within). It will look for files and directories that may be duplicates (e.g., documents that you may have downloaded multiple times), by looking for key words like "... copy ..." and phrases like "... (2)" or "... (3)" etc. You can review, and delete selected files as well.
